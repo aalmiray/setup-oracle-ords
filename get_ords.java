@@ -57,7 +57,7 @@ class get_ords {
         var ordsDirectory = Path.of(".ords");
         Files.createDirectories(ordsDirectory);
 
-        var url = "https://raw.githubusercontent.com/aalmiray/setup-oracle-ords/main/versions.txt";
+        var url = "https://raw.githubusercontent.com/gvenzl/setup-oracle-ords/main/versions.txt";
         var file = ordsDirectory.resolve("versions.txt");
 
         var versions = new TreeMap<String, String>(Comparator.reverseOrder());
