@@ -1,0 +1,62 @@
+name: Setup-Oracle-ORDS
+
+description: 'Setup Oracle ORDS'
+
+branding:
+  icon: 'database'
+  color: 'red'
+
+inputs:
+  version:
+    description: 'The ORDS version to download.'
+    default: 'latest'
+    required: true
+
+  setup-java-version:
+    default: '17'
+    description: 'Setup internal Java runtime.'
+    required: false
+
+  config:
+    description: 'Path to ORDS configuration file.'
+    default: ''
+    required: false
+
+  command:
+    description: 'The ORDS command to invoke.'
+    default: 'none'
+    required: false
+
+  arguments:
+    description: 'The ORDS command arguments.'
+    default: ''
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Setup Java'
+      uses: actions/setup-java@v3
+      if: ${{ inputs.setup-java-version != 'false' }}
+      with:
+        java-version: ${{ inputs.setup-java-version }}
+        distribution: oracle
+
+    - name: 'Verify Java Version'
+      shell: bash
+      run: "${GITHUB_ACTION_PATH}/verify_java.sh"
+
+    - name: 'Setup ORDS'
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: "${GITHUB_ACTION_PATH}/setup_ords.sh"
+
+    - name: 'Invoke ORDS'
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        ORDS_CONFIG: ${{ inputs.config }}
+        ORDS_COMMAND: ${{ inputs.command }}
+        ORDS_ARGUMENTS: ${{ inputs.arguments }}
+      run: "${GITHUB_ACTION_PATH}/invoke_ords.sh"
